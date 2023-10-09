@@ -1,8 +1,7 @@
 import os
-
 from pydantic import BaseModel
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
 app = FastAPI()
@@ -16,27 +15,43 @@ class ConfigContents(BaseModel):
 
 
 @app.get("/")
-async def root():
+async def root() -> dict:
     return {"message": "blank"}
 
 
-# Writes data to server
 @app.post("/writeFile/{fn}")
-async def write_file(fn: str, contents: ConfigContents):
-    # Write files into servers data -folder
+async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
+    """
+    **Write files into the server**
+
+    Args:
+        fn (str): Name of the file, must end with .json
+    
+    Returns:
+        ConfigContents: Contents of the file
+    """
     filepath = os.path.join(dir, "data/" + fn)
     with open(filepath, "w") as f:
         f.write(contents.str_contents)
     return contents
 
 
-# Retrieves .json files from server
 @app.get("/getJsonFile/{fn}")
-async def get_json_file(fn: str):
-    filepath = os.path.join(dir, "data/" + fn)
+async def get_json_file(fn: str) -> FileResponse:
+    """
+    **Retrieve files from the server**
 
-    # Check if the file exists in the directory
+    If the file does not exist, return a 404 *File not found* -error.
+    
+    Args:
+        fn (str): Name of the file, must end with .json
+    
+    Returns:
+        FileResponse: FileResponse object with the specified filepath
+        
+    """
+    filepath = os.path.join(dir, "data/" + fn)
     if os.path.exists(filepath):
         return FileResponse(filepath)
     else:
-        return {"message": "File not found"}
+        raise HTTPException(status_code=404, detail="File not found")

@@ -3,13 +3,13 @@ import json
 import time
 
 
-def dump_data(data, filename: str, server_url: str):
+def dump_data(data, filename: str, server_url: str) -> None:
     url = server_url + "writeFile/" + filename
     response = requests.post(url, data=json.dumps({"str_contents": data}))
     print(response.text)
 
 
-def get_data(filename: str, server_url: str):
+def get_data(filename: str, server_url: str) -> None:
     url = server_url + "getJsonFile/" + filename
     response = requests.get(url)
     if response.status_code == 200:
@@ -21,7 +21,7 @@ def get_data(filename: str, server_url: str):
 
 
 if __name__ == '__main__':
-    host_url = "http://127.0.0.1:8000/"
+    host_url = "http://localhost:8000/"
     contents = '{"one": 1, "two": 2}'
     filename = "some_data.json"
 
