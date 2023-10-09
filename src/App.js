@@ -1,24 +1,19 @@
-import logo from './logo.svg'
 import React from 'react'
-import './App.css'
+import StockChart from './StockChart'
 
 function App () {
+  // Sample data (you would fetch this from an API in a real-world scenario)
+  const data = [
+    { date: '01-01-2023', price: 220 },
+    { date: '02-01-2023', price: 230 },
+    { date: '03-01-2023', price: 215 }
+    // ... more data
+  ]
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Stock Chart</h1>
+      <StockChart data={data} />
     </div>
   )
 }
