@@ -1,5 +1,5 @@
 import React from 'react'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts'
+import { LineChart, Line, XAxis, CartesianGrid } from 'recharts'
 
 // eslint-disable-next-line react/prop-types
 const StockChart = ({ data }) => {
@@ -12,9 +12,6 @@ const StockChart = ({ data }) => {
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="date" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
       <Line type="monotone" dataKey="price" stroke="#8884d8" activeDot={{ r: 8 }} />
     </LineChart>
   )
