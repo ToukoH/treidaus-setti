@@ -4,18 +4,25 @@ from pydantic import BaseModel
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 
-app = FastAPI()
+from ..config import DIRECTORY
+from ..stock_data_handling.request_handler import RequestHandler
 
-# Root directory of server
-dir = os.path.dirname(os.path.dirname(__file__))
 
 class ConfigContents(BaseModel):
+    """Class for holding the contents of the transmitted .json files"""
     str_contents: str
+
+
+# Initialize the request handler
+manage_requests = RequestHandler()
+
+# Initialize the application
+app = FastAPI()
 
 
 @app.get("/")
 async def root() -> dict:
-    return {"message": "blank"}
+    return {"message": "Welcome!"}
 
 
 @app.post("/writeFile/{fn}")
@@ -25,13 +32,15 @@ async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
 
     Args:
         fn (str): Name of the file, must end with .json
+        contents (ConfigContents): Contents of the file
     
     Returns:
         ConfigContents: Contents of the file
     """
-    filepath = os.path.join(dir, "server_data/" + fn)
+    filepath = os.path.join(DIRECTORY, "server_data/" + fn)
     with open(filepath, "w") as f:
         f.write(contents.str_contents)
+    manage_requests.data_received(filepath)
     return contents
 
 
@@ -49,7 +58,7 @@ async def get_json_file(fn: str) -> FileResponse:
         FileResponse: FileResponse object with the specified filepath
         
     """
-    filepath = os.path.join(dir, "server_data/" + fn)
+    filepath = os.path.join(DIRECTORY, "server_data/" + fn)
     if os.path.exists(filepath):
         return FileResponse(filepath)
     else:

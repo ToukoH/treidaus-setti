@@ -3,6 +3,7 @@ import json
 import time
 import os
 
+from ..config import DIRECTORY
 
 def dump_data(data: str, filename: str, server_url: str) -> None:
     """
@@ -40,14 +41,13 @@ def get_data(filename: str, server_url: str, client_url: os.path) -> None:
 
 if __name__ == '__main__':
     host_url = "http://localhost:8000/"
-    dir = os.path.dirname(os.path.dirname(__file__))
 
     # Define the contents and name of the json file that will be written to the server.
     contents = '{"one": 1, "two": 2}'
     filename = "test.json"
 
     # For this to work, a folder named client§_data_for_testing needs to be created in the server directory.
-    filepath = os.path.join(dir, "client_data_for_testing/" + filename)
+    filepath = os.path.join(DIRECTORY, "client_data_for_testing/" + filename)
 
     dump_data(contents, filename, host_url)
     time.sleep(3)
