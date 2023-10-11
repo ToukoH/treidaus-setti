@@ -1,6 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-/data
+server/client_data_for_testing/*
+server/server_data/*
+!server/server_data/note.txt
 
 # dependencies
 /node_modules

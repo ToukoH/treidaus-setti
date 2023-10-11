@@ -9,7 +9,6 @@ app = FastAPI()
 # Root directory of server
 dir = os.path.dirname(os.path.dirname(__file__))
 
-
 class ConfigContents(BaseModel):
     str_contents: str
 
@@ -30,7 +29,7 @@ async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
     Returns:
         ConfigContents: Contents of the file
     """
-    filepath = os.path.join(dir, "data/" + fn)
+    filepath = os.path.join(dir, "server_data/" + fn)
     with open(filepath, "w") as f:
         f.write(contents.str_contents)
     return contents
@@ -50,7 +49,7 @@ async def get_json_file(fn: str) -> FileResponse:
         FileResponse: FileResponse object with the specified filepath
         
     """
-    filepath = os.path.join(dir, "data/" + fn)
+    filepath = os.path.join(dir, "server_data/" + fn)
     if os.path.exists(filepath):
         return FileResponse(filepath)
     else:
