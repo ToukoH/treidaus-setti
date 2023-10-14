@@ -6,7 +6,7 @@ from fastapi.responses import FileResponse
 
 from ..config import DIRECTORY
 from ..stock_data_handling.request_handler import RequestHandler
-
+from ..utils import format_request_filename, format_response_filename
 
 class ConfigContents(BaseModel):
     """Class for holding the contents of the transmitted .json files"""
@@ -37,10 +37,15 @@ async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
     Returns:
         ConfigContents: Contents of the file
     """
+    fn = format_request_filename(fn)
     filepath = os.path.join(DIRECTORY, "server_data/" + fn)
+    # Write the contents of the request into a file with a _request suffix
     with open(filepath, "w") as f:
         f.write(contents.str_contents)
-    manage_requests.data_received(filepath)
+    # Notify the server that the new request file has been written
+    success = manage_requests.data_received(filepath, fn)
+    if not success:
+        raise HTTPException(status_code=401, detail="Invalid request")
     return contents
 
 
@@ -58,8 +63,10 @@ async def get_json_file(fn: str) -> FileResponse:
         FileResponse: FileResponse object with the specified filepath
         
     """
-    filepath = os.path.join(DIRECTORY, "server_data/" + fn)
+    filename = format_response_filename(fn)
+    filepath = os.path.join(DIRECTORY, "server_data/" + filename)
     if os.path.exists(filepath):
+        manage_requests.data_sent(filepath)
         return FileResponse(filepath)
     else:
         raise HTTPException(status_code=404, detail="File not found")
