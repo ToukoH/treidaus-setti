@@ -3,6 +3,7 @@ from pydantic import BaseModel
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from ..config import DIRECTORY
 from ..stock_data_handling.request_handler import RequestHandler
@@ -18,6 +19,11 @@ manage_requests = RequestHandler()
 
 # Initialize the application
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=['http://localhost:3000']
+)
 
 
 @app.get("/")
@@ -45,7 +51,9 @@ async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
     # Notify the server that the new request file has been written
     success = manage_requests.data_received(filepath, fn)
     if not success:
-        raise HTTPException(status_code=401, detail="Invalid request")
+        raise HTTPException(status_code=401, detail=(
+            "valid request is of form {\"TICKER\":\"AAPL\", \"INTERVAL\":\"1d\", \"PERIOD\":\"1mo\"}")
+        )
     return contents
 
 
