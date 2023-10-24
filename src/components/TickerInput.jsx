@@ -32,7 +32,8 @@ function TickerInput () {
                 />
                 <Button
                     colorScheme='blue'
-                    mt={1}>
+                    mt={1}
+                    onClick={handleSubmit}>
                     Submit
                 </Button>
             </Box>
