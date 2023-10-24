@@ -35,13 +35,18 @@ async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
     """
     **Write files into the server**
 
+    Keywords:
+    CLEAR: When value is True clears all of the servers data
+    TICKER: For example "AAPL"
+    PERIOD: For example "1mo"
+    INTERVAL: For example "1d"
+
     Args:
 
         fn (str): Name of the file, must end with .json
 
         contents (ConfigContents): Contents of the file, of the form {"str_contents":
             "{"TICKER":"AAPL", "INTERVAL":"1d", "PERIOD":"1mo"}"}
-
 
     Returns:
         ConfigContents: Contents of the file
