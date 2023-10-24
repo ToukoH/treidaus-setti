@@ -2,21 +2,35 @@ import React, { useState } from 'react'
 import { Box, Input, Heading, Button } from '@chakra-ui/react'
 import Axios from 'axios'
 
+function makeId (length) {
+    let result = ''
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    const charactersLength = characters.length
+    let counter = 0
+    while (counter < length) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength))
+        counter += 1
+    }
+    return result
+}
+
 function TickerInput () {
     const [tickerInputField, setTickerInputField] = useState('')
-    const url = 'http://127.0.0.1:8000/writeFile/terve2.json'
 
     const handleChange = (event) => {
         setTickerInputField(event.target.value)
     }
 
     const handleSubmit = async () => {
+        const id = makeId(6)
+        const url = `http://127.0.0.1:8000/writeFile/${id}.json`
+
         const dataObj = JSON.parse('{"str_contents": "{\\"TICKER\\":\\"AAPL\\", \\"INTERVAL\\":\\"1d\\", \\"PERIOD\\":\\"1mo\\"}"}')
         const contentsObj = JSON.parse(dataObj.str_contents)
         contentsObj.TICKER = tickerInputField
         dataObj.str_contents = JSON.stringify(contentsObj)
         const data = JSON.stringify(dataObj)
-        console.log(data)
+        console.log(url)
 
         try {
             const response = await Axios.post(url, data, {
