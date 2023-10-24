@@ -1,20 +1,13 @@
 import React from 'react'
-import StockChart from './StockChart'
+import StockChart from './components/StockChart'
+import TickerInput from './components/TickerInput'
 
 function App () {
-  // NEXT TRY TO FETCH DATA FROM API AND USE IT HERE
-  const data = [
-    { date: '01-01-2023', price: 220 },
-    { date: '02-01-2023', price: 230 },
-    { date: '03-01-2023', price: 215 }
-  ]
-
-  return (
-    <div className="App">
-      <h1>Stock Chart</h1>
-      <StockChart data={data} />
-    </div>
-  )
+    return (
+        <div className="App">
+            <TickerInput />
+        </div>
+    )
 }
 
 export default App
