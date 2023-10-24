@@ -1,16 +1,34 @@
 import React, { useState } from 'react'
 import { Box, Input, Heading, Button } from '@chakra-ui/react'
+import Axios from 'axios'
 
 function TickerInput () {
     const [tickerInputField, setTickerInputField] = useState('')
+    const url = 'http://127.0.0.1:8000/writeFile/terve2.json'
 
     const handleChange = (event) => {
         setTickerInputField(event.target.value)
     }
 
-    const handleSubmit = (event) => {
-    }
+    const handleSubmit = async () => {
+        const dataObj = JSON.parse('{"str_contents": "{\\"TICKER\\":\\"AAPL\\", \\"INTERVAL\\":\\"1d\\", \\"PERIOD\\":\\"1mo\\"}"}')
+        const contentsObj = JSON.parse(dataObj.str_contents)
+        contentsObj.TICKER = tickerInputField
+        dataObj.str_contents = JSON.stringify(contentsObj)
+        const data = JSON.stringify(dataObj)
+        console.log(data)
 
+        try {
+            const response = await Axios.post(url, data, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            console.log('Response:', response.data)
+        } catch (error) {
+            console.error('Error posting data:', error)
+        }
+    }
     return (
         <div className='ticker-container'>
             <Box
