@@ -5,6 +5,7 @@ import os
 
 from ..config import DIRECTORY
 
+
 def dump_data(data: str, filename: str, server_url: str) -> None:
     """
     **Dumps data to the server**
@@ -23,7 +24,7 @@ def dump_data(data: str, filename: str, server_url: str) -> None:
 def get_data(filename: str, server_url: str, client_url: os.path) -> None:
     """
     **Retrieves data from the server**
-    
+
     Args:
         filename (str): Name of the file that is to be retrieved
         server_url (str): URL of the server
@@ -39,7 +40,7 @@ def get_data(filename: str, server_url: str, client_url: os.path) -> None:
         print("File not found or error occurred.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     host_url = "http://localhost:8000/"
 
     # Define the contents and name of the json file that will be written to the server.

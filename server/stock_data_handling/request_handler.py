@@ -39,6 +39,8 @@ class RequestHandler:
         # Create the response file
         stock_data = StockData(data.get("TICKER"))
         stock_data.get_stock_data_history(data.get("PERIOD"), data.get("INTERVAL"))
-        filename = "server_data/" + format_response_filename(self._filepaths.get(filepath))
+        filename = "server_data/" + format_response_filename(
+            self._filepaths.get(filepath)
+        )
         stock_data.create_json_file_from_stock_data(filename)
         return True
