@@ -9,8 +9,10 @@ from ..config import DIRECTORY
 from ..stock_data_handling.request_handler import RequestHandler
 from ..utils import format_request_filename, format_response_filename
 
+
 class ConfigContents(BaseModel):
     """Class for holding the contents of the transmitted .json files"""
+
     str_contents: str
 
 
@@ -40,9 +42,13 @@ async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
     **Write files into the server**
 
     Args:
+
         fn (str): Name of the file, must end with .json
-        contents (ConfigContents): Contents of the file
-    
+
+        contents (ConfigContents): Contents of the file, of the form {"str_contents":
+            "{"TICKER":"AAPL", "INTERVAL":"1d", "PERIOD":"1mo"}"}
+
+
     Returns:
         ConfigContents: Contents of the file
     """
@@ -54,8 +60,11 @@ async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
     # Notify the server that the new request file has been written
     success = manage_requests.data_received(filepath, fn)
     if not success:
-        raise HTTPException(status_code=401, detail=(
-            "valid request is of form {\"TICKER\":\"AAPL\", \"INTERVAL\":\"1d\", \"PERIOD\":\"1mo\"}")
+        raise HTTPException(
+            status_code=401,
+            detail=(
+                'Valid request is of form {"TICKER":"AAPL", "INTERVAL":"1d", "PERIOD":"1mo"}'
+            ),
         )
     return contents
 
@@ -66,13 +75,13 @@ async def get_json_file(fn: str) -> FileResponse:
     **Retrieve files from the server**
 
     If the file does not exist, return a 404 *File not found* -error.
-    
+
     Args:
+
         fn (str): Name of the file, must end with .json
-    
+
     Returns:
         FileResponse: FileResponse object with the specified filepath
-        
     """
     filename = format_response_filename(fn)
     filepath = os.path.join(DIRECTORY, "server_data/" + filename)
