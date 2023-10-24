@@ -6,13 +6,6 @@ from server.stock_data_handling.stock_data import StockData
 from server.utils import format_response_filename
 
 
-DATA_POINTS = [
-    "TICKER",
-    "PERIOD",
-    "INTERVAL",
-]
-
-
 class RequestHandler:
     """Class for handling the requests to the server"""
 
@@ -32,13 +25,19 @@ class RequestHandler:
         # Load the request data into a dictionary
         with open(filepath, "r") as file:
             data = json.load(file)
-        # Check that all of the required data is in the request
-        valid = all([x in DATA_POINTS for x in data.keys()])
-        if not valid:
-            return False
+        # Clears the server of any json
+        if data.get("CLEAR"):
+            for filename in os.listdir(DIRECTORY + "/server_data"):
+                if filename.endswith(".json") and os.path.isfile(
+                    os.path.join(DIRECTORY + "/server_data", filename)
+                ):
+                    os.remove(os.path.join(DIRECTORY + "/server_data", filename))
+            return True
         # Create the response file
-        stock_data = StockData(data.get("TICKER"))
-        stock_data.get_stock_data_history(data.get("PERIOD"), data.get("INTERVAL"))
+        stock_data = StockData(data.get("TICKER", "AAPL"))
+        stock_data.get_stock_data_history(
+            data.get("PERIOD", "1mo"), data.get("INTERVAL", "1d")
+        )
         filename = "server_data/" + format_response_filename(
             self._filepaths.get(filepath)
         )
