@@ -34,10 +34,19 @@ class RequestHandler:
                     os.remove(os.path.join(DIRECTORY + "/server_data", filename))
             return True
         # Create the response file
-        stock_data = StockData(data.get("TICKER", "AAPL"))
-        stock_data.get_stock_data_history(
-            data.get("PERIOD", "1mo"), data.get("INTERVAL", "1d")
-        )
+        stock_data = StockData(data.get("TICKER"))
+
+        if data.get("PERIOD") and data.get("INTERVAL"):
+            # Period and interval are used
+            stock_data.get_stock_data_history(data.get("PERIOD"), data.get("INTERVAL"))
+        elif data.get("START_DATE") and data.get("END_DATE"):
+            # Start and end date are used
+            stock_data.get_stock_data_history_dates(
+                data.get("START_DATE"), data.get("END_DATE")
+            )
+        else:
+            return False
+
         filename = "server_data/" + format_response_filename(
             self._filepaths.get(filepath)
         )
