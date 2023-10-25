@@ -5,6 +5,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
+from typing import Optional
+
 from ..config import DIRECTORY
 from ..stock_data_handling.request_handler import RequestHandler
 from ..utils import format_request_filename, format_response_filename
@@ -31,11 +33,12 @@ class RequestContents(BaseModel):
     """
 
     TICKER: str = "AAPL"
-    PERIOD: str = "1mo"
-    INTERVAL: str = "1d"
-    START_DATE: str = "2000-01-01"
-    END_DATE: str = "2000-12-31"
+    PERIOD: Optional[str] = None
+    INTERVAL: str = "90m"
+    START_DATE: str = None
+    END_DATE: str = None
     CLEAR: bool = False
+    ACTIONS: bool = False
 
 
 # Initialize the request handler
@@ -72,12 +75,15 @@ async def write_file(fn: str, contents: RequestContents) -> RequestContents:
     Returns:
         RequestContents: Contents of the file
     """
+    if contents.START_DATE and contents.END_DATE:
+        contents.PERIOD = None
+    
     fn = format_request_filename(fn)
     filepath = os.path.join(DIRECTORY, "server_data/" + fn)
-    # Write the contents of the request into a file with a _request suffix
+    
     with open(filepath, "w") as f:
         f.write(contents.model_dump_json())
-    # Notify the server that the new request file has been written
+    
     success = manage_requests.data_received(filepath, fn)
     if not success:
         raise HTTPException(status_code=401, detail=("Error while handling request"))
