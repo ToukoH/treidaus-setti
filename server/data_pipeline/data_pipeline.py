@@ -10,10 +10,32 @@ from ..stock_data_handling.request_handler import RequestHandler
 from ..utils import format_request_filename, format_response_filename
 
 
-class ConfigContents(BaseModel):
-    """Class for holding the contents of the transmitted .json files"""
+class RequestContents(BaseModel):
+    """
+    **Class for holding the contents of the transmitted .json files**
 
-    str_contents: str
+    TICKER: The ticker of the stock which's data is to be fetched
+
+    PERIOD: Supported values 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd or max,
+        if not set START_DATE and END_DATE is used
+
+    INTERVAL: Supported values 1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo or 3mo,
+        if not set START_DATE and END_DATE is used
+
+    START_DATE: In format YYYY-MM-DD, if not set PERIOD and INTERVAL is used
+
+    END_DATE: In format YYYY-MM-DD, if not set PERIOD and INTERVAL is used
+
+    CLEAR: if True, all .json files on the server will be deleted
+
+    """
+
+    TICKER: str = "AAPL"
+    PERIOD: str = "1mo"
+    INTERVAL: str = "1d"
+    START_DATE: str = "2000-01-01"
+    END_DATE: str = "2000-12-31"
+    CLEAR: bool = False
 
 
 # Initialize the request handler
@@ -37,7 +59,7 @@ async def root() -> dict:
 
 
 @app.post("/writeFile/{fn}")
-async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
+async def write_file(fn: str, contents: RequestContents) -> RequestContents:
     """
     **Write files into the server**
 
@@ -45,27 +67,20 @@ async def write_file(fn: str, contents: ConfigContents) -> ConfigContents:
 
         fn (str): Name of the file, must end with .json
 
-        contents (ConfigContents): Contents of the file, of the form {"str_contents":
-            "{"TICKER":"AAPL", "INTERVAL":"1d", "PERIOD":"1mo"}"}
-
+        contents (RequestContents): Contents of the file
 
     Returns:
-        ConfigContents: Contents of the file
+        RequestContents: Contents of the file
     """
     fn = format_request_filename(fn)
     filepath = os.path.join(DIRECTORY, "server_data/" + fn)
     # Write the contents of the request into a file with a _request suffix
     with open(filepath, "w") as f:
-        f.write(contents.str_contents)
+        f.write(contents.model_dump_json())
     # Notify the server that the new request file has been written
     success = manage_requests.data_received(filepath, fn)
     if not success:
-        raise HTTPException(
-            status_code=401,
-            detail=(
-                'Valid request is of form {"TICKER":"AAPL", "INTERVAL":"1d", "PERIOD":"1mo"}'
-            ),
-        )
+        raise HTTPException(status_code=401, detail=("Error while handling request"))
     return contents
 
 
