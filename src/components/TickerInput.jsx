@@ -1,35 +1,37 @@
 import React, { useState } from 'react'
-import { Box, Input, Heading, Button } from '@chakra-ui/react'
+import { Box, Input, Heading, Button, InputGroup } from '@chakra-ui/react'
 import Axios from 'axios'
-
-function makeId (length) {
-    let result = ''
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-    const charactersLength = characters.length
-    let counter = 0
-    while (counter < length) {
-        result += characters.charAt(Math.floor(Math.random() * charactersLength))
-        counter += 1
-    }
-    return result
-}
+import CreateId from '../utilities/createId'
 
 function TickerInput () {
-    const [tickerInputField, setTickerInputField] = useState('')
+    const [tickerInputNameField, setTickerInputNameField] = useState('')
+    const [tickerInputStartDate, setTickerInputStartDate] = useState('')
+    const [tickerInputEndDate, setTickerInputEndDate] = useState('')
 
-    const handleChange = (event) => {
-        setTickerInputField(event.target.value)
+    const handleTickerNameChange = (event) => {
+        setTickerInputNameField(event.target.value)
+    }
+    const handleStartDateChange = (event) => {
+        setTickerInputStartDate(event.target.value)
+    }
+
+    const handleEndDateChange = (event) => {
+        setTickerInputEndDate(event.target.value)
     }
 
     const handleSubmit = async () => {
-        const id = makeId(6)
+        const id = CreateId(6)
         const url = `http://127.0.0.1:8000/writeFile/${id}.json`
 
-        const dataObj = JSON.parse('{"str_contents": "{\\"TICKER\\":\\"AAPL\\", \\"INTERVAL\\":\\"1d\\", \\"PERIOD\\":\\"1mo\\"}"}')
-        const contentsObj = JSON.parse(dataObj.str_contents)
-        contentsObj.TICKER = tickerInputField
-        dataObj.str_contents = JSON.stringify(contentsObj)
-        const data = JSON.stringify(dataObj)
+        const postTemplate = {
+            TICKER: tickerInputNameField,
+            START_DATE: tickerInputStartDate,
+            END_DATE: tickerInputEndDate,
+            CLEAR: false
+        }
+
+        const data = JSON.stringify(postTemplate)
+        console.log(data)
         console.log(url)
 
         try {
@@ -58,10 +60,22 @@ function TickerInput () {
                 </Heading>
                 <Input
                     placeholder='Ticker name'
-                    value={tickerInputField}
-                    onChange={handleChange}
+                    value={tickerInputNameField}
+                    onChange={handleTickerNameChange}
                     mt={2}
                 />
+                <InputGroup mt={1}>
+                    <Input
+                        type='date'
+                        value={tickerInputStartDate}
+                        onChange={handleStartDateChange}
+                    />
+                    <Input
+                        type='date'
+                        value={tickerInputEndDate}
+                        onChange={handleEndDateChange}
+                    />
+                </InputGroup>
                 <Button
                     colorScheme='blue'
                     mt={1}
