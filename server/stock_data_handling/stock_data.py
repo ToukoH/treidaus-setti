@@ -28,7 +28,7 @@ class StockData:
     def get_stock_data_history(self, period: str = "1y", interval: str = "1d"):
         self._data = self._ticker.history(period=period, interval=interval)
 
-    def get_stock_data_history_dates(self, start, end):
+    def get_stock_data_history_dates(self, start: str, end: str):
         self._data = self._ticker.history(start=start, end=end)
 
     def create_json_file_from_stock_data(self, filename: str):
