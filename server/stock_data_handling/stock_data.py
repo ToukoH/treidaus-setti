@@ -25,11 +25,13 @@ class StockData:
         self._data = pd.DataFrame()
         self._ticker = yf.Ticker(ticker)
 
-    def get_stock_data_history(self, period: str = "1y", interval: str = "1d"):
+    def get_stock_data_history(self, period: str, interval: str):
         self._data = self._ticker.history(period=period, interval=interval)
 
-    def get_stock_data_history_dates(self, start: str, end: str):
-        self._data = self._ticker.history(start=start, end=end)
+    def get_stock_data_history_dates(self, start: str, end: str, interval: str):
+        self._data = self._ticker.history(
+            start=start, end=end, interval=interval, period=None
+        )
 
     def create_json_file_from_stock_data(self, filename: str):
         self._data.to_json(
