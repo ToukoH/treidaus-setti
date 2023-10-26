@@ -6,7 +6,7 @@ import CreateId from '../utilities/createId'
 function TickerInput () {
     const [tickerInputNameField, setTickerInputNameField] = useState('')
     const [tickerInputStartDate, setTickerInputStartDate] = useState('')
-    const [tickerInterval, setTickerInterval] = useState('')
+    const [tickerInputInterval, setTickerInputInterval] = useState('')
     const [tickerInputEndDate, setTickerInputEndDate] = useState('')
 
     const handleTickerNameChange = (event) => {
@@ -16,8 +16,8 @@ function TickerInput () {
         setTickerInputStartDate(event.target.value)
     }
 
-    const handleIntervalChange = (event) => {
-        setTickerInterval(event.target.value)
+    const handleInputIntervalChange = (event) => {
+        setTickerInputInterval(event.target.value)
     }
 
     const handleEndDateChange = (event) => {
@@ -32,6 +32,7 @@ function TickerInput () {
             TICKER: tickerInputNameField,
             START_DATE: tickerInputStartDate,
             END_DATE: tickerInputEndDate,
+            INTERVAL: tickerInputInterval,
             CLEAR: false
         }
 
@@ -81,7 +82,10 @@ function TickerInput () {
                         onChange={handleEndDateChange}
                     />
                 </InputGroup>
-                <Select placeholder='Select interval' mt={1}>
+                <Select
+                    placeholder='Select interval' mt={1}
+                    value={tickerInputInterval}
+                    onChange={handleInputIntervalChange}>
                     <option value='1m'>1m</option>
                     <option value='90m'>90m</option>
                     <option value='1d'>1d</option>
