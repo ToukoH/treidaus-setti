@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { Box, Input, Heading, Button, InputGroup } from '@chakra-ui/react'
+import { Box, Input, Heading, Button, InputGroup, Select } from '@chakra-ui/react'
 import Axios from 'axios'
 import CreateId from '../utilities/createId'
 
 function TickerInput () {
     const [tickerInputNameField, setTickerInputNameField] = useState('')
     const [tickerInputStartDate, setTickerInputStartDate] = useState('')
+    const [tickerInterval, setTickerInterval] = useState('')
     const [tickerInputEndDate, setTickerInputEndDate] = useState('')
 
     const handleTickerNameChange = (event) => {
@@ -13,6 +14,10 @@ function TickerInput () {
     }
     const handleStartDateChange = (event) => {
         setTickerInputStartDate(event.target.value)
+    }
+
+    const handleIntervalChange = (event) => {
+        setTickerInterval(event.target.value)
     }
 
     const handleEndDateChange = (event) => {
@@ -76,6 +81,11 @@ function TickerInput () {
                         onChange={handleEndDateChange}
                     />
                 </InputGroup>
+                <Select placeholder='Select interval' mt={1}>
+                    <option value='1m'>1m</option>
+                    <option value='90m'>90m</option>
+                    <option value='1d'>1d</option>
+                </Select>
                 <Button
                     colorScheme='blue'
                     mt={1}
