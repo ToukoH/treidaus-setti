@@ -9,6 +9,7 @@ from ..config import DIRECTORY
 from ..stock_data_handling.request_handler import RequestHandler
 from ..utils import format_request_filename, format_response_filename
 
+os.environ["PYTHONDONTWRITEBYTECODE"] = "1"
 
 class RequestContents(BaseModel):
     """
