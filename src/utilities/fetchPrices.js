@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const fetchAvailableFilenames = async () => {
+const fetchJsonFiles = async () => {
     try {
         const url = 'http://127.0.0.1:8000/listJsonFiles'
         const response = await axios.get(url)
@@ -11,8 +11,9 @@ const fetchAvailableFilenames = async () => {
     }
 }
 
-const fetchJsonFile = async (filename) => {
+const fetchForFile = async (filename) => {
     try {
+        filename = filename.replace('_response', '')
         const url = `http://127.0.0.1:8000/getJsonFile/${filename}.json`
         const response = await axios.get(url)
         return response.data
@@ -22,17 +23,14 @@ const fetchJsonFile = async (filename) => {
     }
 }
 
-const fetchAndProcessFile = async () => {
-    const filenames = await fetchAvailableFilenames()
+const getFile = async () => {
+    const filenames = await fetchJsonFiles()
 
     if (filenames.length > 0) {
-    // For simplicity, we're just taking the first file in the list.
-    // You might want to add some logic here to select the correct file.
         const filename = filenames[0].split('.')[0]
 
-        const data = await fetchJsonFile(filename)
+        const data = await fetchForFile(filename)
         if (data) {
-            // Do something with the data
             console.log(data)
         }
     } else {
@@ -40,4 +38,4 @@ const fetchAndProcessFile = async () => {
     }
 }
 
-fetchAndProcessFile()
+export default getFile
