@@ -5,8 +5,6 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from typing import Optional
-
 from ..config import DIRECTORY
 from ..stock_data_handling.request_handler import RequestHandler
 from ..utils import format_request_filename, format_response_filename
@@ -19,26 +17,39 @@ class RequestContents(BaseModel):
     TICKER: The ticker of the stock which's data is to be fetched
 
     PERIOD: Supported values 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, 10y, ytd or max,
-        if not set START_DATE and END_DATE is used
+        if not set, START_DATE and END_DATE are used
 
-    INTERVAL: Supported values 1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo or 3mo,
-        if not set START_DATE and END_DATE is used
+    INTERVAL: Supported values 1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo or 3mo
 
-    START_DATE: In format YYYY-MM-DD, if not set PERIOD and INTERVAL is used
+    START_DATE: In format YYYY-MM-DD, used if PERIOD is not set
 
-    END_DATE: In format YYYY-MM-DD, if not set PERIOD and INTERVAL is used
+    END_DATE: In format YYYY-MM-DD, used if PERIOD is not set
 
-    CLEAR: if True, all .json files on the server will be deleted
+    CLEAR: if True, all .json files on the server will be deleted and no data will be fetched
 
     """
 
     TICKER: str = "AAPL"
-    PERIOD: Optional[str] = None
-    INTERVAL: str = "90m"
+    PERIOD: str = None
+    INTERVAL: str = "60m"
     START_DATE: str = None
     END_DATE: str = None
     CLEAR: bool = False
     ACTIONS: bool = False
+
+    def format_request_params(self):
+        """Formats the response"""
+
+        if self.START_DATE or self.END_DATE:
+            self.PERIOD = None
+
+        if not self.PERIOD and not self.START_DATE:
+            # TODO: make changes to interval so that some data is fetched
+            # for example if interval is 1h, data can be fetched from max two years ago
+
+            # if start date is set far back
+            self.INTERVAL = "1d"
+            print("Changed interval to", self.INTERVAL)
 
 
 # Initialize the request handler
@@ -49,7 +60,7 @@ app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=['http://localhost:3000', 'https://127.0.0.1:3000'],
+    allow_origins=["http://localhost:3000", "https://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -75,15 +86,15 @@ async def write_file(fn: str, contents: RequestContents) -> RequestContents:
     Returns:
         RequestContents: Contents of the file
     """
-    if contents.START_DATE and contents.END_DATE:
-        contents.PERIOD = None
-    
+
+    contents.format_request_params()
+
     fn = format_request_filename(fn)
     filepath = os.path.join(DIRECTORY, "server_data/" + fn)
-    
+
     with open(filepath, "w") as f:
         f.write(contents.model_dump_json())
-    
+
     success = manage_requests.data_received(filepath, fn)
     if not success:
         raise HTTPException(status_code=401, detail=("Error while handling request"))
