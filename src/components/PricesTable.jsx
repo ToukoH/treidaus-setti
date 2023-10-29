@@ -1,11 +1,11 @@
 import React from 'react'
-import getFile from '../utilities/fetchPrices'
+import getFile, { res } from '../utilities/fetchPrices'
 import { Button, Box, Heading } from '@chakra-ui/react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 function PricesTable () {
-    const handlePress = async () => {
-        getFile()
+    const handlePress = () => {
+        console.log(res)
     }
 
     return (

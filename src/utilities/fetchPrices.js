@@ -13,7 +13,6 @@ const fetchJsonFiles = async () => {
 
 const fetchForFile = async (filename) => {
     try {
-        filename = filename.replace('_response', '')
         const url = `http://127.0.0.1:8000/getJsonFile/${filename}.json`
         const response = await axios.get(url)
         return response.data
@@ -29,6 +28,7 @@ const getFile = async (filename) => {
     if (filenames.length > 0) {
         const data = await fetchForFile(filename)
         if (data) {
+            res = data
             console.log(data)
         }
     } else {
@@ -36,4 +36,5 @@ const getFile = async (filename) => {
     }
 }
 
+export let res
 export default getFile

@@ -50,7 +50,6 @@ function TickerInput () {
             console.log('Response:', response.data)
             const filename = `${id}.json`
             const res = getFile(filename)
-            console.log(res)
         } catch (error) {
             console.error('Error posting data:', error)
         }
