@@ -122,3 +122,10 @@ async def get_json_file(fn: str) -> FileResponse:
         return FileResponse(filepath)
     else:
         raise HTTPException(status_code=404, detail="File not found")
+
+
+@app.get("/listJsonFiles", response_model=list[str])
+async def list_json_files():
+    filepath = os.path.join(DIRECTORY, "server_data/")
+    json_files = [f for f in os.listdir(filepath) if f.endswith("response.json")]
+    return json_files
