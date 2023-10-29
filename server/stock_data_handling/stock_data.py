@@ -33,8 +33,11 @@ class StockData:
         )
 
     def create_json_file_from_stock_data(self, filename: str):
-        self._data.to_json(
-            path_or_buf=os.path.join(DIRECTORY, filename),
-            orient="index",
-            date_format="iso",
-        )
+        try:
+            self._data.to_json(
+                path_or_buf=os.path.join(DIRECTORY, filename),
+                orient="index",
+                date_format="iso",
+            )
+        finally:
+            self._data = None
