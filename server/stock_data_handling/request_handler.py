@@ -42,11 +42,15 @@ class RequestHandler:
         stock_data = StockData(data.get("TICKER"))
         if data.get("PERIOD"):
             # Period is used
-            stock_data.get_stock_data_history(data.get("PERIOD"), data.get("INTERVAL"))
+            stock_data.load_data(
+                period=data.get("PERIOD"), interval=data.get("INTERVAL")
+            )
         else:
             # Start and end date are used
-            stock_data.get_stock_data_history_dates(
-                data.get("START_DATE"), data.get("END_DATE"), data.get("INTERVAL")
+            stock_data.load_data(
+                start=data.get("START_DATE"),
+                end=data.get("END_DATE"),
+                interval=data.get("INTERVAL"),
             )
 
         filename = "server_data/" + format_response_filename(

@@ -21,16 +21,15 @@ class StockData:
         ticker (str, optional): Ticker of the stock. Defaults to "AAPL".
     """
 
-    def __init__(self, ticker: str = "AAPL"):
+    def __init__(self, tickers: str = "AAPL"):
         self._data = pd.DataFrame()
-        self._ticker = yf.Ticker(ticker)
+        self._tickers = tickers
 
-    def get_stock_data_history(self, period: str, interval: str):
-        self._data = self._ticker.history(period=period, interval=interval)
-
-    def get_stock_data_history_dates(self, start: str, end: str, interval: str):
-        self._data = self._ticker.history(
-            start=start, end=end, interval=interval, period=None
+    def load_data(
+        self, interval: str, period: str = None, start: str = None, end: str = None
+    ):
+        self._data = yf.download(
+            self._tickers, period=period, interval=interval, start=start, end=end
         )
 
     def create_json_file_from_stock_data(self, filename: str):
