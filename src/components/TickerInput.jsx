@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Box, Input, Heading, Button, InputGroup, Select } from '@chakra-ui/react'
 import Axios from 'axios'
 import CreateId from '../utilities/createId'
+import getFile from '../utilities/fetchPrices'
 
 function TickerInput () {
     const [tickerInputNameField, setTickerInputNameField] = useState('')
@@ -47,6 +48,9 @@ function TickerInput () {
                 }
             })
             console.log('Response:', response.data)
+            const filename = `${id}.json`
+            const res = getFile(filename)
+            console.log(res)
         } catch (error) {
             console.error('Error posting data:', error)
         }

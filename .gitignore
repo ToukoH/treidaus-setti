@@ -3,6 +3,9 @@
 server/client_data_for_testing/*
 server/server_data/*
 !server/server_data/note.txt
+server/__pycache__/
+server/data_pipeline/__pycache__/
+server/stock_data_handling/__pycache__/
 
 # dependencies
 /node_modules

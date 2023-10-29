@@ -23,12 +23,10 @@ const fetchForFile = async (filename) => {
     }
 }
 
-const getFile = async () => {
+const getFile = async (filename) => {
     const filenames = await fetchJsonFiles()
 
     if (filenames.length > 0) {
-        const filename = filenames[0].split('.')[0]
-
         const data = await fetchForFile(filename)
         if (data) {
             console.log(data)
