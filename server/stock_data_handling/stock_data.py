@@ -2,7 +2,7 @@ import yfinance as yf
 import os
 import pandas as pd
 
-# from ..config import DIRECTORY
+from ..config import DIRECTORY
 
 
 def get_stock_data_download(
@@ -35,10 +35,7 @@ class StockData:
     def create_json_file_from_stock_data(self, filename: str):
         try:
             self._data.to_json(
-                path_or_buf=os.path.join(
-                    "C:/Users/henri/treidaus/treidaus-setti/server/server_data",
-                    filename,
-                ),
+                path_or_buf=os.path.join(DIRECTORY, filename),
                 orient="index",
                 date_format="iso",
             )
