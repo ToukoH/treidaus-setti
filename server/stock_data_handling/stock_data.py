@@ -29,14 +29,19 @@ class StockData:
         self, interval: str, period: str = None, start: str = None, end: str = None
     ):
         self._data = yf.download(
-            self._tickers, period=period, interval=interval, start=start, end=end
+            self._tickers,
+            period=period,
+            interval=interval,
+            start=start,
+            end=end,
+            group_by="ticker",
         )
 
     def create_json_file_from_stock_data(self, filename: str):
         try:
             self._data.to_json(
                 path_or_buf=os.path.join(DIRECTORY, filename),
-                orient="index",
+                orient="columns",
                 date_format="iso",
             )
         finally:
