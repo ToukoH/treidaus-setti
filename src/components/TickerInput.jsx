@@ -4,7 +4,8 @@ import Axios from 'axios'
 import CreateId from '../utilities/createId'
 import getFile from '../utilities/fetchPrices'
 
-function TickerInput () {
+// eslint-disable-next-line space-before-function-paren
+function TickerInput() {
     const [tickerInputNameField, setTickerInputNameField] = useState('')
     const [tickerInputStartDate, setTickerInputStartDate] = useState('')
     const [tickerInputInterval, setTickerInputInterval] = useState('')
